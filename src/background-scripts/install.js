@@ -15,7 +15,7 @@ export async function onInstalled( details ) {
     const items = await chromeLocalStorage( 'get', [
       'autoClipboard', 'autoPlay', 'defaultApi',
       'defaultTo', 'ignoreChinese', 'ignoreNumLike',
-      'needCtrl', 'showMenu', 'showTranslateButton', 'showShanbay'
+      'needCtrl', 'showMenu', 'showTranslateButton'
     ] );
 
     items.showBtn = items.showTranslateButton;
