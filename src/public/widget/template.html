@@ -68,16 +68,20 @@
           <st-div class="__copy-and-read__">
             <st-span class="__copy-and-read__" @click="play(result.result,result.to)">朗读</st-span>
             <st-span class="__copy-and-read__" @click="copy(result.result,$event)">复制</st-span>
+            <st-span class="__copy-and-read__" v-show="!loading && result.dict && result.dict.length" @click="addWord(query.text,result.dict,$event)">背诵</st-span>
           </st-div>
         </st-div>
       </st-div>
     </st-div>
     <st-footer>
-      <!-- TODO: 功能未测试，先暂时注释掉 -->
-      <!-- <st-span v-show="showShanbay && !loading && result"><a @click="addWord(query.text, $event)">添加至扇贝单词本</a></st-span> -->
       <st-span v-show="!loading && apiName">via
-        <a :href="result.link" target="_blank" v-text="apiName"></a></st-span>
+        <a :href="result.link" target="_blank" v-text="apiName"></a>
+      </st-span>
     </st-footer>
   </st-div>
   <st-div class="__st-btn__" v-el:st-btn :style="btnStyle">译</st-div>
+  <st-div v-show="reviewMode">
+    <st-span>Do you still remember this word?</st-span>
+    <!-- TODO -->
+  </st-div>
 </st-div>
