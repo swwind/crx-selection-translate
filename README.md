@@ -11,6 +11,6 @@
 
 ## 安装
 
-- [github release](./releases);
+- [github release](https://github.com/swwind/crx-selection-translate/releases)
 
 Good Luck & Have Fun!
