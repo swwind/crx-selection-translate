@@ -73,6 +73,19 @@
         </st-div>
       </st-div>
     </st-div>
+    <st-div v-show="showForm && review.length" class="__st-review__">
+      <st-span>复习</st-span>
+      <st-div>
+        <st-span v-text="review" style="display: block;"></st-span>
+        <st-ul v-show="showdict && reviewDict && reviewDict.length">
+          <st-li v-for="d in reviewDict" v-text="d"></st-li>
+        </st-ul>
+        <st-span class="__copy-and-read__" v-show="!showdict" v-on:click="continueReview()">显示</st-span>
+        <st-span class="__copy-and-read__" v-show="showdict" v-on:click="rememberWord()">记得</st-span>
+        <st-span class="__copy-and-read__" v-show="showdict" v-on:click="forgotWord()">遗忘</st-span>
+      </st-div>
+      <!-- TODO -->
+    </st-div>
     <st-footer>
       <st-span v-show="!loading && apiName">via
         <a :href="result.link" target="_blank" v-text="apiName"></a>
@@ -80,8 +93,4 @@
     </st-footer>
   </st-div>
   <st-div class="__st-btn__" v-el:st-btn :style="btnStyle">译</st-div>
-  <st-div v-show="reviewMode">
-    <st-span>Do you still remember this word?</st-span>
-    <!-- TODO -->
-  </st-div>
 </st-div>

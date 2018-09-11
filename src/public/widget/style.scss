@@ -69,6 +69,36 @@ $baseFontHoverColor: #9a6a16;
     }
   }
 
+  .__st-review__ {
+    > st-span {
+      color: white;
+    }
+    > st-div {
+      background-color: white;
+      padding: 20px 10px;
+    }
+  }
+
+  .__copy-and-read__, .__retry__ {
+    display: inline-block;
+    margin-right: 10px;
+    cursor: pointer;
+    color: #12813e;
+  }
+
+  .__copy-and-read__ {
+    @extend %transition-all;
+    user-select: none;
+    height: 16px;
+    line-height: 16px;
+    font-size: 12px;
+    opacity: 0;
+  }
+
+  &:hover .__copy-and-read__ {
+    opacity: 1;
+  }
+
   // 翻译窗口的样式
   > .__st-box__ {
     width: 250px;
@@ -213,25 +243,6 @@ $baseFontHoverColor: #9a6a16;
         st-span:first-child {
           margin-right: 5px;
         }
-      }
-
-      .__copy-and-read__ > st-span, .__retry__ {
-        display: inline-block;
-        margin-right: 10px;
-        cursor: pointer;
-        color: #12813e;
-      }
-
-      .__copy-and-read__ > st-span {
-        @extend %transition-all;
-        height: 16px;
-        line-height: 16px;
-        font-size: 12px;
-        opacity: 0;
-      }
-
-      &:hover .__copy-and-read__ > st-span {
-        opacity: 1;
       }
     }
 

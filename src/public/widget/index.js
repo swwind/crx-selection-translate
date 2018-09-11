@@ -33,9 +33,11 @@ const resolvedEmptyPromise = Promise.resolve() ,
 export default Vue.extend( {
   template ,
   data : ()=>({
-    reviewMode : true ,
     locales : translateLocales ,
     showForm : false ,
+    review : '' ,
+    reviewDict: [] ,
+    showdict: false ,
     query : {
       text : '' ,
       from : '' ,
@@ -56,6 +58,7 @@ export default Vue.extend( {
         error : '连接到翻译引擎时发生了错误，请刷新网页或重启浏览器后再试。'
       }
     } );
+    this.loadReview();
   } ,
   computed : {
     apiName() {
@@ -186,7 +189,7 @@ export default Vue.extend( {
             end('已在背诵列表中');
             return;
           }
-          res.set(text, dict);
+          res.set(text, { dict, time: new Date(), times: 0 });
           chromeCall('storage.local.set', {'dictionaries': JSON.stringify(Array.from(res))})
             .then(() => {
               end('已添加');
@@ -198,13 +201,86 @@ export default Vue.extend( {
      * 删除背诵单词
      * @param {String} text
      */
-    removeWord(text) {
+    removeWord(text, callback) {
       chromeCall('storage.local.get', ['dictionaries'])
         .then((result) => {
           const res = this.getMapFromString(result.dictionaries);
-          res.delete(res);
+          res.delete(text);
           chromeCall('storage.local.set', {'dictionaries': JSON.stringify(Array.from(res))})
+            .then(callback);
         });
+    },
+
+    /**
+     * 加载复习单词
+     */
+    loadReview() {
+      chromeCall('storage.local.get', ['dictionaries'])
+        .then((result) => {
+          const res = this.getMapFromString(result.dictionaries);
+          const keys = Array.from(res.keys());
+          const aval = [];
+          keys.forEach((key) => {
+            const value = res.get(key);
+            // one day later
+            if (new Date() - new Date(value.time) > 1000 * 60 * 60 * 24) {
+              aval.push(key);
+            }
+          });
+          if (aval.length) {
+            const word = aval[Math.floor(Math.random() * aval.length)];
+            this.review = word;
+            this.reviewDict = res.get(word).dict;
+          } else {
+            this.review = '';
+            this.reviewDict = [];
+          }
+        }, noop );
+    },
+
+    /**
+     * 仍然记得当前单词
+     */
+    rememberWord() {
+      this.showdict = false;
+      const word = this.review;
+      chromeCall('storage.local.get', ['dictionaries'])
+        .then((result) => {
+          const res = this.getMapFromString(result.dictionaries);
+          const value = res.get(word);
+          if (++ value.times >= 5) {
+            this.removeWord(word, this.loadReview.bind(this));
+            return;
+          }
+          value.time = new Date();
+          res.set(word, value);
+          chromeCall('storage.local.set', {'dictionaries': JSON.stringify(Array.from(res))})
+            .then(this.loadReview.bind(this));
+        }, noop );
+    },
+
+    /**
+     * 遗忘当前单词
+     */
+    forgotWord() {
+      this.showdict = false;
+      const word = this.review;
+      chromeCall('storage.local.get', ['dictionaries'])
+        .then((result) => {
+          const res = this.getMapFromString(result.dictionaries);
+          const value = res.get(word);
+          value.time = new Date();
+          res.set(word, value);
+          chromeCall('storage.local.set', {'dictionaries': JSON.stringify(Array.from(res))})
+            .then(this.loadReview.bind(this));
+        }, noop );
+    },
+
+    /**
+     * 遗忘当前单词
+     */
+    continueReview() {
+      this.showdict = true;
     },
 
     /**
