@@ -182,7 +182,7 @@ export default Vue.extend( {
         }, 2000);
       }
       const fail = () => end('出现了异常！');
-      chromeCall('storage.local.get', ['dictionaries'])
+      chromeCall('storage.sync.get', ['dictionaries'])
         .then((result) => {
           const res = this.getMapFromString(result.dictionaries);
           if (res.has(text)) {
@@ -190,7 +190,7 @@ export default Vue.extend( {
             return;
           }
           res.set(text, { dict, time: new Date(), times: 0 });
-          chromeCall('storage.local.set', {'dictionaries': JSON.stringify(Array.from(res))})
+          chromeCall('storage.sync.set', {'dictionaries': JSON.stringify(Array.from(res))})
             .then(() => {
               end('已添加');
             }, fail);
@@ -202,11 +202,11 @@ export default Vue.extend( {
      * @param {String} text
      */
     removeWord(text, callback) {
-      chromeCall('storage.local.get', ['dictionaries'])
+      chromeCall('storage.sync.get', ['dictionaries'])
         .then((result) => {
           const res = this.getMapFromString(result.dictionaries);
           res.delete(text);
-          chromeCall('storage.local.set', {'dictionaries': JSON.stringify(Array.from(res))})
+          chromeCall('storage.sync.set', {'dictionaries': JSON.stringify(Array.from(res))})
             .then(callback);
         });
     },
@@ -215,7 +215,7 @@ export default Vue.extend( {
      * 加载复习单词
      */
     loadReview() {
-      chromeCall('storage.local.get', ['dictionaries'])
+      chromeCall('storage.sync.get', ['dictionaries'])
         .then((result) => {
           const res = this.getMapFromString(result.dictionaries);
           const keys = Array.from(res.keys());
@@ -244,7 +244,7 @@ export default Vue.extend( {
     rememberWord() {
       this.showdict = false;
       const word = this.review;
-      chromeCall('storage.local.get', ['dictionaries'])
+      chromeCall('storage.sync.get', ['dictionaries'])
         .then((result) => {
           const res = this.getMapFromString(result.dictionaries);
           const value = res.get(word);
@@ -254,7 +254,7 @@ export default Vue.extend( {
           }
           value.time = new Date();
           res.set(word, value);
-          chromeCall('storage.local.set', {'dictionaries': JSON.stringify(Array.from(res))})
+          chromeCall('storage.sync.set', {'dictionaries': JSON.stringify(Array.from(res))})
             .then(this.loadReview.bind(this));
         }, noop );
     },
@@ -265,13 +265,13 @@ export default Vue.extend( {
     forgotWord() {
       this.showdict = false;
       const word = this.review;
-      chromeCall('storage.local.get', ['dictionaries'])
+      chromeCall('storage.sync.get', ['dictionaries'])
         .then((result) => {
           const res = this.getMapFromString(result.dictionaries);
           const value = res.get(word);
           value.time = new Date();
           res.set(word, value);
-          chromeCall('storage.local.set', {'dictionaries': JSON.stringify(Array.from(res))})
+          chromeCall('storage.sync.set', {'dictionaries': JSON.stringify(Array.from(res))})
             .then(this.loadReview.bind(this));
         }, noop );
     },
