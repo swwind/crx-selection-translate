@@ -13,4 +13,6 @@
 
 - [github release](https://github.com/swwind/crx-selection-translate/releases)
 
+请下载 .zip 文件，解压，在 chrome://extensions/ 中打开开发者模式，然后选择「加载已解压的扩展程序」。
+
 Good Luck & Have Fun!
